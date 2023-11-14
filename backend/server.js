@@ -9,7 +9,7 @@ import productRoutes from './routes/productRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
 import uploadRoutes from './routes/uploadRoutes.js'
-import razorpay from 'razorPay'
+import razorpay from 'razorpay'
 import { updateOrderToPaid } from './controllers/orderController.js';
 import {protect} from './middleware/authMiddleware.js'
 dotenv.config();
