@@ -7,7 +7,7 @@ main {
 }
 
 .rating svg {
-  color: #f8e825;
+  color: #2b7429;
 }
 
 .rating-text {
@@ -50,4 +50,11 @@ table th {
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
+}
+.eshop{
+  position: relative;
+    width: 80px;
+    left: -30px;
+   
+    
 }

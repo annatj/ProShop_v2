@@ -1,6 +1,7 @@
 import asyncHandler from "../middleware/asyncHandler.js";
 import Order from '../models/orderModel.js'
 
+
 //@desc   create new order
 //@route  POST/api/orders
 //@access  Private
@@ -136,10 +137,42 @@ const getOrders = asyncHandler(async(req,res)=>{
 
 });
 
+//@desc   create razorpay
+//@route  POST/api/orders/:id/razorpay
+//@access  Private
+
+//initialize razorpay
+// const rzp = new razorpay({
+//     key_id:process.env.RAZORPAY_ID_KEY,
+//     key_secret:process.env.RAZORPAY_SECRET_KEY,
+// });
+// const razorPay = asyncHandler(async(req,res)=>{
+
+//     const{totalPrice } = req.body
+//     console.log('totalprice',totalPrice);
+
+//     console.log('totalPrice',totalPrice);
+//     const orderData = {
+//         amount:totalPrice * 100,
+//         currency:'INR',
+
+//     };
+//     rzp.orders.create(orderData,(err,order)=>{
+//         if(err){
+//             console.error(err);
+//             return res.status(500).json({error:'Error creating order'});
+//         }
+//         return res.json(order);
+//     });
+
+  
+
+// });
+
 
 export {addOrderItems,
     getMyOrders,
     getOrderById,
     updateOrderToPaid,
     updateOrderToDelivered,
-    getOrders,};
+    getOrders};

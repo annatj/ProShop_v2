@@ -6,7 +6,8 @@ import { useSelector } from 'react-redux'
 import {PayPalButtons,usePayPalScriptReducer} from '@paypal/react-paypal-js'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import {useGetOrderDetailsQuery,usePayOrderMutation,useGetPayPalClientIdQuery,useDeliverOrderMutation} from '../slices/ordersApiSlice.js';
+
+import {useGetOrderDetailsQuery,usePayOrderMutation,useRazorPayMutation,useRazorPayUpdateMutation,useGetPayPalClientIdQuery,useDeliverOrderMutation} from '../slices/ordersApiSlice.js';
 
 
 
@@ -15,6 +16,10 @@ const OrderScreen = () => {
     const {data:order,refetch,isLoading,error,} = useGetOrderDetailsQuery(orderId);
 
     const [payOrder,{isLoading:loadingPay}] = usePayOrderMutation();
+
+    const [razorPay,{isLoading:loadingRazorPay}] = useRazorPayMutation();
+    const [razorPayUpdate] = useRazorPayUpdateMutation();
+    
     const [deliverOrder,{isLoading:loadingDeliver}] = useDeliverOrderMutation();
 
     const [{isPending},paypalDispatch] = usePayPalScriptReducer();
@@ -96,7 +101,67 @@ const OrderScreen = () => {
       }
 
     }
+
+    const razorPayHandler = async() =>{
+      
+       
+      try{
+      const res = await razorPay({orderId,order});
+      console.log(res.data.amount);
+      console.log(typeof res.data.amount);
+     
+     
+
+      console.log(res);
+     
+       
+        const options = {
+          key:res.data.key_id,
+          amount:res.data.amount,
+          currency:res.data.currency,
+          name:'Proshop ecommerce project',
+          description:'Payment for your service',
+          order_id:res.data.id,
+          handler:function (res){
+            razorPayUpdate({orderId,order});
+             refetch();
+             toast.success('Payment successful!');
+          },
+          "prefill": {
+            "contact":""+res.data.contact+"",
+            "name": ""+res.data.name+"",
+            "email": ""+res.data.email+""
+          },
+          "notes" : {
+            "description":""+res.data.description+""
+          },
+          "theme": {
+            "color": "#a32300"
+          }
+        };
+       
+        const rzp = new window.Razorpay(options);
+        rzp.on('payment.failed', function (response){
+          alert("Payment Failed");
+      });
+        rzp.open();
+       
+      
+      
+      
+      }catch(err){
+        console.error('Error creating order:',err.error);
+      }
+
+      
+    };
+
     
+
+    
+
+    
+  
    
   return isLoading? <Loader/> : error? <Message variant='danger'/> :(
     <>
@@ -213,8 +278,17 @@ const OrderScreen = () => {
                   <div>
                    <PayPalButtons createOrder={createOrder} onApprove={onApprove} onError={onError}></PayPalButtons>
                   </div>
+                 
                 </div>
               )}
+               {loadingRazorPay && <Loader/>}
+             
+                  <Button type='button'
+                  className='btn btn-block'
+                  onClick={razorPayHandler}>Pay with RazorPay</Button>
+              
+                 
+                
 
             </ListGroup.Item>
            )}
